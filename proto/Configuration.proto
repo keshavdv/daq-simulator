@@ -1,0 +1,23 @@
+message Sensor {
+	required int32 id = 1;
+	enum SensorType {
+	    ANALOG = 0;
+	    DIGITAL = 1;
+	    DIFFERENTIAL = 2;
+	    STRAIN = 3;
+	    TEMPERATURE = 4;
+	}
+	required SensorType type = 2;
+	required string name = 3;
+}
+
+message DeviceInfo {
+	required string model = 1;
+	repeated Sensor sensors = 2;
+}
+
+message SensorConfiguration {
+	required int32 id = 1;
+	required bool enable = 2;
+	required int32 frequency = 3;
+}

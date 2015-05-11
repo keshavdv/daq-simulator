@@ -1,0 +1,15 @@
+{
+  "name": "daq-sim",
+  "version": "1.0.0",
+  "description": "DAQ simulator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Keshav Varma <keshavdv@gmail.com> (http://www.keshavdv.com)",
+  "license": "ISC",
+  "dependencies": {
+  	"node-protobuf": "*"
+  }
+
+}
