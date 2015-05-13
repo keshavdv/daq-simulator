@@ -20,13 +20,13 @@ var start = true;
 client.on('readable', function() {
   var chunk;
   while (null !== (chunk = client.read(4))) {
-    var remaining = chunk.readUInt16LE();
-    data = client.read(remaining);    
+	var remaining = chunk.readUInt16LE();
+	data = client.read(remaining);    
 	if (!deviceDetected) {
 		try {
 			var device_ident = pb.parse(data, "DeviceInfo")
 		}  catch (e) {
-    		console.log("Invalid device identifier")
+			console.log("Invalid device identifier")
 		}
 		console.log('Found device: ' + device_ident.model);
 		for(var i = 0; i < device_ident.sensors.length; i++) {

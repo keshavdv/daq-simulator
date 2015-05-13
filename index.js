@@ -15,47 +15,47 @@ var device_message = pb.serialize(dev, "DeviceInfo")
 var clients = [];
 
 net.createServer(function (socket) {
-  buffer = new Buffer(16000);
-  socket.name = socket.remoteAddress + ":" + socket.remotePort 
-  clients.push(socket);
-  console.log("Sending device information to " + socket.name);
-  sendBuffer(device_message, socket);
+	buffer = new Buffer(16000);
+	socket.name = socket.remoteAddress + ":" + socket.remotePort 
+	clients.push(socket);
+	console.log("Sending device information to " + socket.name);
+	sendBuffer(device_message, socket);
 
-  socket.on('data', function (data) {
-    console.log(data)
-    // TODO: handle config messages
-  });
+	socket.on('data', function (data) {
+		console.log(data)
+		// TODO: handle config messages
+	});
 
-  socket.on('end', function () {
-    clients.splice(clients.indexOf(socket), 1);
-  });
+	socket.on('end', function () {
+		clients.splice(clients.indexOf(socket), 1);
+	});
 
-  var time = 0;
-  setInterval(function() {
-  	var updates = {
-  		timestamp: time,
-  		messages: []
-  	}
-  	for (var i = 0 ; i < dev.sensors.length; i++) {
-  		updates.messages.push({id: dev.sensors[i].id, value: 100*Math.random()})
-  	}
-  	msg = pb.serialize(updates, "SensorUpdate")
-  	console.log("Sending sensor updates to " + socket.name)
-  	sendBuffer(msg, socket)
-  	time++;
-  }, 1)
+	var time = 0;
+	setInterval(function() {
+		var updates = {
+			timestamp: time,
+			messages: []
+		}
+		for (var i = 0 ; i < dev.sensors.length; i++) {
+			updates.messages.push({id: dev.sensors[i].id, value: 100*Math.random()})
+		}
+		msg = pb.serialize(updates, "SensorUpdate")
+		console.log("Sending sensor updates to " + socket.name)
+		sendBuffer(msg, socket)
+		time++;
+	}, 1)
 
-  function sendBuffer(buffer, socket) {
-    msg_len = Buffer(4);
-  	msg_len.writeUInt16LE(buffer.length);
-  	socket.write(Buffer.concat([msg_len, buffer]));
-  }
+	function sendBuffer(buffer, socket) {
+		msg_len = Buffer(4);
+		msg_len.writeUInt16LE(buffer.length);
+		socket.write(Buffer.concat([msg_len, buffer]));
+	}
 
 }).listen(5000);
  
 function broadcast(message) {
 	clients.forEach(function (client) {
-	  client.write(message);
+		client.write(message);
 	});
 }
 
