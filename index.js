@@ -5,27 +5,21 @@ var net = require('net');
 var pb = new p(fs.readFileSync("messages.desc"))
 var dev = {
 	model: 'DAQ v1',
-	sensors: [
-		{
-			id: 1, 
-			type: "DIGITAL",
-			name: "Digital 1"
-		},
-		{
-			id: 2, 
-			type: "DIGITAL",
-			name: "Digital 2"
-		}
-	]
+	sensors: []
 }
+for (var i = 0 ; i < 32; i++) {
+	dev.sensors.push({id: i, type: "DIGITAL", name: "Digital " + i})
+}
+
 var device_message = pb.serialize(dev, "DeviceInfo")
 var clients = [];
 
 net.createServer(function (socket) {
+  buffer = new Buffer(16000);
   socket.name = socket.remoteAddress + ":" + socket.remotePort 
   clients.push(socket);
   console.log("Sending device information to " + socket.name);
-  socket.write(device_message);
+  sendBuffer(device_message, socket);
 
   socket.on('data', function (data) {
     console.log(data)
@@ -47,9 +41,15 @@ net.createServer(function (socket) {
   	}
   	msg = pb.serialize(updates, "SensorUpdate")
   	console.log("Sending sensor updates to " + socket.name)
-  	socket.write(msg);
+  	sendBuffer(msg, socket)
   	time++;
-  }, 1000)
+  }, 1)
+
+  function sendBuffer(buffer, socket) {
+    msg_len = Buffer(4);
+  	msg_len.writeUInt16LE(buffer.length);
+  	socket.write(Buffer.concat([msg_len, buffer]));
+  }
 
 }).listen(5000);
  

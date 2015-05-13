@@ -10,8 +10,18 @@ var client = new net.Socket();
 client.connect(5000, '127.0.0.1', function() {
 	console.log('Connected');
 });
- 
-client.on('data', function(data) {
+
+var buffer = Buffer(32000)
+var data_ready = false
+var remaining = 0;
+var start = true;
+
+
+client.on('readable', function() {
+  var chunk;
+  while (null !== (chunk = client.read(4))) {
+    var remaining = chunk.readUInt16LE();
+    data = client.read(remaining);    
 	if (!deviceDetected) {
 		try {
 			var device_ident = pb.parse(data, "DeviceInfo")
@@ -26,9 +36,9 @@ client.on('data', function(data) {
 	} else {
 		// Receive sensor updates
 		var update = pb.parse(data, "SensorUpdate");
-		console.log(update);
+		console.log("Received update " + update.timestamp)
 	}
-		
+  }
 });
  
 client.on('error', function() {
