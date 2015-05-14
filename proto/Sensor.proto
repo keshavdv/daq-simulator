@@ -1,5 +1,5 @@
 message SensorMessage {
-  required bytes id = 1;
+  required uint32 id = 1;
   required uint32 value = 2;
 }
 

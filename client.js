@@ -33,6 +33,10 @@ client.on('readable', function() {
 			console.log('\t' + device_ident.sensors[i].name)
 		}
 		deviceDetected = true;
+
+		// TODO: send configuration information back
+		var start_message = pb.serialize({action: "START"}, "DeviceControl");
+		client.write(start_message);
 	} else {
 		// Receive sensor updates
 		var update = pb.parse(data, "SensorUpdate");
