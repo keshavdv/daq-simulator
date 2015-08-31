@@ -2,15 +2,19 @@
 
 To install dependencies run:
 
+    npm install -g mocha
     npm install
     make
 
-To start the server:
+To start the simulated DAQ:
 
-    node index.js
+    node daq.js
 
-To start the client:
+To run the tests:
 
-    node client.js
+   	make test # defaults to testing localhost:5000
+    HOST=<host> PORT=<port> make test # optionally specify a remote DAQ to test against
 
  
+
+
